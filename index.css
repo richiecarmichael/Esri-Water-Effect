@@ -1,0 +1,87 @@
+﻿/*
+    
+    Copyright 2017 Esri
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at:
+    https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+*/
+
+html, body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: "Avenir Next W00","Helvetica Neue",Helvetica,Arial,sans-serif;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#level {
+    position: absolute;
+    top: 205px;
+    left: 15px;
+}
+
+.buttons {
+    box-shadow: 0px 1px 2px rgba(0,0,0,0.3);
+    background-color: white;
+    color: rgb(110, 110, 110);
+    cursor: pointer;
+}
+
+.button {
+    width: 32px;
+    height: 32px;
+}
+
+.button:not(:first-child) {
+    border-top: 1px solid rgba(50,50,50,0.25);
+}
+
+.button.active {
+    background-color: #e6791c;
+    color: rgb(46, 46, 46);
+}
+
+.button:hover {
+    background-color: #f2f2f2;
+    color: rgb(46, 46, 46);
+}
+
+.button.active:hover {
+    background-color: #e59d60;
+    color: rgb(46, 46, 46);
+}
+
+.button-text {
+    position: relative;
+    top: 8px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 400;
+    pointer-events: none;
+}
+
+

@@ -1,0 +1,81 @@
+uniform sampler2D noiseSampler;
+uniform sampler2D reflectionSampler;
+
+varying vec3 fPos;
+varying vec3 fEye;
+
+uniform float scale;
+
+uniform vec3 lightDirection;
+uniform vec4 lightAmbient;
+uniform vec4 lightDiffuse;
+
+uniform float phase;
+
+uniform vec3 color;
+uniform float enabled;
+
+vec2 rotate(vec2 pos, float angle) {
+  float c = cos(angle);
+  float s = sin(angle);
+
+  return vec2(c * pos.x - s * pos.y, s * pos.x + c * pos.y);
+}
+
+float compDelta(vec2 pos) {
+  const float PI_THIRD = 1.04719755;
+
+  float result = .0;
+  float s = 1.0;
+
+  for (int i = 0; i < 6; ++i) {
+    vec2 tc = pos / (20.0 * s);
+
+    tc += rotate(vec2(1.0 + phase, .0), PI_THIRD * float(i));
+
+    result += s * texture2D(noiseSampler, tc).r;
+
+    s *= 1.5;
+  }
+
+  return result * scale * .2;
+}
+
+vec2 normal2envTC(vec3 normal) { 
+  float v = .5 + .5 * asin(normal.y) * 0.63661977; 
+  float u = .5 - .5 * atan(normal.z, normal.x) * 0.31830988; 
+
+  return vec2(u, v);
+}
+
+void main(void) {
+  vec3 viewVec = normalize(fEye - fPos);
+
+  float d0 = compDelta(fPos.xy);
+  float dx = compDelta(fPos.xy + vec2(.05, .0));
+  float dy = compDelta(fPos.xy + vec2(.0, .05));
+
+  vec3 normal = normalize(vec3(d0 - dx, d0 - dy, 0.05));
+
+  float fresnel = clamp(1.0 - 1.25 * dot(viewVec, normal), .0, 1.0);
+
+  vec3 reflDir = reflect(-viewVec, normal);
+
+  if (reflDir.z < .02) {
+    reflDir.z = 0.04 - reflDir.z;
+  }
+
+  vec4 lightSpecular = lightDiffuse;
+  lightSpecular.w = min(lightDiffuse.w + lightAmbient.w, 1.0) * 0.5;
+
+  vec3 reflCol = texture2D(reflectionSampler, normal2envTC(reflDir)).rgb * lightAmbient.rgb * lightSpecular.w;
+  reflCol *= (.5 + max(lightDirection.z, .0) * .5) * enabled;
+
+  vec3 waterColor = color * (lightAmbient.rgb * lightAmbient.w + max(lightDirection.z, .0) * lightDiffuse.rgb * lightDiffuse.w);
+  vec3 finalColor = mix(waterColor, reflCol, (.15 + .6 * fresnel) * enabled);
+
+  vec3 spec = pow(max(dot(reflDir, lightDirection), .001), 80.0) * lightSpecular.rgb * lightSpecular.w * 2.0;
+  finalColor += lightDiffuse.w * spec * enabled;
+
+  gl_FragColor = vec4(finalColor, 1.0);
+}

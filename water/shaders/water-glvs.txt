@@ -1,0 +1,12 @@
+uniform vec3 origin;
+uniform vec3 eye;
+
+varying vec3 fPos;
+varying vec3 fEye;
+
+void main(void) {
+  fPos = position;
+  fEye = eye - origin;
+
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
