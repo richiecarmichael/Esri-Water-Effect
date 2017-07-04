@@ -1,5 +1,4 @@
 ﻿/*
-
     Copyright 2017 Esri
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +11,7 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
 */
-
 require(
     {
         packages: [{
@@ -135,6 +132,7 @@ require(
                 UpdateBuildings();
             });
 
+            // Load/reload water three.js layer
             function LoadWater() {
                 // Initialize the three.js renderering framework.
                 if (_threeRenderer) {
@@ -143,10 +141,10 @@ require(
                 }
                 _threeRenderer = new ThreeRenderer(_view);
 
-                //
+                // Get url to water level
                 var url = $('.button.active').attr('data-url');
 
-                //
+                // Download water polygons
                 var query = new Query({
                     where: '1=1',
                     returnGeometry: true
@@ -163,6 +161,7 @@ require(
                 });
             }
 
+            // Update building symbology
             function UpdateBuildings() {
                 var ele = $('.button.active').attr('data-elevation');
                 _view.map.findLayerById('buildings-under').definitionExpression = 'BASEELEV <= ' + ele;
